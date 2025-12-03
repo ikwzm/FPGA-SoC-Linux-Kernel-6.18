@@ -52,8 +52,8 @@ shell$ git commit -m "patch for scripts/package/builddeb to add tools/include an
 ##### Create tag and .version
 
 ```console
-shell$ git tag -a v6.18-armv7-fpga -m "release v6.18.0-armv7-fpga-1"
-shell$ echo 0 > .version
+shell$ git tag -a v6.18-armv7-fpga -m "release v6.18.0-armv7-fpga-2"
+shell$ echo 1 > .version
 ```
 
 ### Build
@@ -80,16 +80,16 @@ shell$ make deb-pkg
 #### Install kernel image to this repository
 
 ```console
-shell$ cp arch/arm/boot/zImage ../vmlinuz-6.18.0-armv7-fpga-1
+shell$ cp arch/arm/boot/zImage ../vmlinuz-6.18.0-armv7-fpga-2
 shell$ install -d              ../files
-shell$ cp .config              ../files/config-6.18.0-armv7-fpga-1
+shell$ cp .config              ../files/config-6.18.0-armv7-fpga-2
 ```
 
 #### Install devicetree to this repository
 
 ```console
-shell$ install -d                           ../devicetrees/6.18.0-armv7-fpga-1
-shell$ cp arch/arm/boot/dts/xilinx/*        ../devicetrees/6.18.0-armv7-fpga-1
-shell$ cp arch/arm/boot/dts/intel/socfpga/* ../devicetrees/6.18.0-armv7-fpga-1
+shell$ install -d                           ../devicetrees/6.18.0-armv7-fpga-2
+shell$ cp arch/arm/boot/dts/xilinx/*        ../devicetrees/6.18.0-armv7-fpga-2
+shell$ cp arch/arm/boot/dts/intel/socfpga/* ../devicetrees/6.18.0-armv7-fpga-2
 ```
 
