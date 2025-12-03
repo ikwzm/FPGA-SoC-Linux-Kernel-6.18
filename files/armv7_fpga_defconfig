@@ -8,11 +8,6 @@
 CONFIG_SYSVIPC=y
 
 ### ----------------------------------------------------------------------------
-### uselib syscall (for libc5 and earlier)
-### ----------------------------------------------------------------------------
-CONFIG_USELIB=y
-
-### ----------------------------------------------------------------------------
 ### Timers subsystem
 ### ----------------------------------------------------------------------------
 
@@ -48,7 +43,7 @@ CONFIG_HIGH_RES_TIMERS=y
 CONFIG_PREEMPT=y
 
 #### 
-#### Fully Preemptible Kernel (Real-Time)
+#### Scheduler controlled preemption model
 #### 
 #### 
 
@@ -192,21 +187,6 @@ CONFIG_ARM_ERRATA_775420=y
 ### Symmetric Multi-Processing
 ### ----------------------------------------------------------------------------
 CONFIG_SMP=y
-
-### ----------------------------------------------------------------------------
-### Support cpu topology definition
-### ----------------------------------------------------------------------------
-### CONFIG_ARM_CPU_TOPOLOGY=y
-
-#### 
-#### Multi-core scheduler support
-#### 
-CONFIG_SCHED_MC=y
-
-#### 
-#### SMT scheduler support
-#### 
-CONFIG_SCHED_SMT=y
 
 ### ----------------------------------------------------------------------------
 ### big.LITTLE support (Experimental)
@@ -370,6 +350,16 @@ CONFIG_NEON=y
 ## =============================================================================
 ## General architecture-dependent options
 ## =============================================================================
+
+### ----------------------------------------------------------------------------
+### SMT (Hyperthreading) scheduler support
+### ----------------------------------------------------------------------------
+CONFIG_SCHED_SMT=y
+
+### ----------------------------------------------------------------------------
+### Multi-Core Cache (MC) scheduler support
+### ----------------------------------------------------------------------------
+CONFIG_SCHED_MC=y
 
 ### ----------------------------------------------------------------------------
 ### Enable seccomp to safely execute untrusted bytecode
@@ -578,9 +568,9 @@ CONFIG_CFG80211_DEBUGFS=y
 ##### 
 CONFIG_CFG80211_WEXT=y
 
-#### 
-#### Generic IEEE 802.11 Networking Stack (mac80211)
-#### 
+##### 
+##### Generic IEEE 802.11 Networking Stack (mac80211)
+##### 
 CONFIG_MAC80211=m
 
 #### 
@@ -599,11 +589,6 @@ CONFIG_MAC80211_LEDS=y
 CONFIG_MAC80211_DEBUGFS=y
 
 #### 
-#### Trace all mac80211 debug messages
-#### 
-CONFIG_MAC80211_MESSAGE_TRACING=y
-
-#### 
 #### Select mac80211 debugging features
 #### 
 CONFIG_MAC80211_DEBUG_MENU=y
@@ -611,6 +596,13 @@ CONFIG_MAC80211_DEBUG_MENU=y
 #### end of Select mac80211 debugging features
 
 ### end of Wireless
+
+### ----------------------------------------------------------------------------
+### RF switch subsystem support
+### ----------------------------------------------------------------------------
+CONFIG_RFKILL=m
+
+### end of RF switch subsystem support
 
 ## end of Networking support
 
@@ -975,16 +967,9 @@ CONFIG_CAN_DEBUG_DEVICES=y
 #### end of CAN Device Drivers
 
 #### 
-#### MDIO bus device drivers
+#### Bitbanged MDIO buses
 #### 
-#### CONFIG_MDIO_DEVICE=y
-
-##### 
-##### Bitbanged MDIO buses
-##### 
 CONFIG_MDIO_BITBANG=y
-
-#### end of MDIO bus device drivers
 
 #### 
 #### USB Network Adapters
@@ -1541,14 +1526,14 @@ CONFIG_MT7925U=m
 ##### CONFIG_WLAN_VENDOR_MICROCHIP=y
 
 ###### 
-###### WILC SDIO
+###### Atmel WILC1000 SDIO (WiFi only)
 ###### 
-CONFIG_WILC_SDIO=m
+CONFIG_WILC1000_SDIO=m
 
 ###### 
-###### WILC SPI
+###### Atmel WILC1000 SPI (WiFi only)
 ###### 
-CONFIG_WILC_SPI=m
+CONFIG_WILC1000_SPI=m
 
 ##### 
 ##### Ralink devices
@@ -1812,7 +1797,7 @@ CONFIG_RTW89_8852BTE=m
 CONFIG_RTW89_8852CE=m
 
 ####### 
-####### Realtek 8922AE PCI wireless network (Wi-Fi 7) adapter
+####### Realtek 8922AE/8922AE-VS PCI wireless network (Wi-Fi 7) adapter
 ####### 
 CONFIG_RTW89_8922AE=m
 
@@ -1907,11 +1892,6 @@ CONFIG_WLCORE_SDIO=m
 ##### ZyDAS devices
 ##### 
 ##### CONFIG_WLAN_VENDOR_ZYDAS=y
-
-###### 
-###### USB ZD1201 based Wireless device support
-###### 
-CONFIG_USB_ZD1201=m
 
 ###### 
 ###### ZyDAS ZD1211/ZD1211B USB-wireless support
@@ -2098,13 +2078,23 @@ CONFIG_I2C_MUX_PCA954x=y
 ##### 
 
 ###### 
+###### Altera Soft IP I2C
+###### 
+CONFIG_I2C_ALTERA=m
+
+###### 
 ###### Cadence I2C Controller
 ###### 
 CONFIG_I2C_CADENCE=y
 
 ###### 
-###### Synopsys DesignWare Platform
+###### Synopsys DesignWare I2C adapter
 ###### 
+CONFIG_I2C_DESIGNWARE_CORE=y
+
+####### 
+####### Synopsys DesignWare Platform driver
+####### 
 CONFIG_I2C_DESIGNWARE_PLATFORM=y
 
 ##### end of I2C Hardware Bus support
@@ -2320,6 +2310,17 @@ CONFIG_FB=y
 
 #### end of Frame buffer Devices
 
+#### 
+#### Console display driver support
+#### 
+
+##### 
+##### Framebuffer Console support
+##### 
+CONFIG_FRAMEBUFFER_CONSOLE=y
+
+#### end of Console display driver support
+
 ### end of Graphics support
 
 ### ----------------------------------------------------------------------------
@@ -2338,9 +2339,8 @@ CONFIG_SND=y
 CONFIG_SND_SOC=y
 
 ###### 
-###### Audio support for Analog Devices reference designs
+###### Analog Devices
 ###### 
-CONFIG_SND_SOC_ADI=y
 
 ####### 
 ####### AXI-I2S support
@@ -2351,6 +2351,8 @@ CONFIG_SND_SOC_ADI_AXI_I2S=y
 ####### AXI-SPDIF support
 ####### 
 CONFIG_SND_SOC_ADI_AXI_SPDIF=y
+
+###### end of Analog Devices
 
 ##### end of ALSA for SoC audio support
 
@@ -2379,12 +2381,12 @@ CONFIG_HID_MICROSOFT=y
 
 ##### end of Special HID drivers
 
-#### 
-#### I2C HID support
-#### 
+##### 
+##### I2C HID support
+##### 
 # CONFIG_I2C_HID is not set
 
-#### end of I2C HID support
+##### end of I2C HID support
 
 ### end of HID bus support
 
@@ -2762,7 +2764,7 @@ CONFIG_OF_FPGA_REGION=y
 ## =============================================================================
 
 ### ----------------------------------------------------------------------------
-### Second extended fs support
+### Second extended fs support (DEPRECATED)
 ### ----------------------------------------------------------------------------
 CONFIG_EXT2_FS=y
 
@@ -2777,14 +2779,9 @@ CONFIG_EXT2_FS_XATTR=y
 CONFIG_EXT2_FS_POSIX_ACL=y
 
 ### ----------------------------------------------------------------------------
-### The Extended 3 (ext3) filesystem
+### The Extended 4 (ext4) filesystem
 ### ----------------------------------------------------------------------------
-CONFIG_EXT3_FS=y
-
-#### 
-#### Ext3 POSIX Access Control Lists
-#### 
-CONFIG_EXT3_FS_POSIX_ACL=y
+CONFIG_EXT4_FS=y
 
 ### ----------------------------------------------------------------------------
 ### Dnotify support
@@ -2809,11 +2806,6 @@ CONFIG_VFAT_FS=y
 #### NTFS file system support
 #### 
 CONFIG_NTFS_FS=y
-
-##### 
-##### NTFS write support
-##### 
-CONFIG_NTFS_RW=y
 
 ### end of DOS/FAT/EXFAT/NT Filesystems
 
@@ -3002,17 +2994,6 @@ CONFIG_DEBUG_FS=y
 CONFIG_DETECT_HUNG_TASK=y
 
 ### end of Debug Oops, Lockups and Hangs
-
-### ----------------------------------------------------------------------------
-### Scheduler Debugging
-### ----------------------------------------------------------------------------
-
-#### 
-#### Collect scheduler debugging info
-#### 
-# CONFIG_SCHED_DEBUG is not set
-
-### end of Scheduler Debugging
 
 ### ----------------------------------------------------------------------------
 ### RCU Debugging
